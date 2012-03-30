@@ -9,7 +9,6 @@ package com.yogurt3d.presets.effects
 	
 	public class EffectDream extends PostProcessingEffectBase
 	{
-		private var shader:FilterDream;
 		
 		public function EffectDream()
 		{
@@ -17,26 +16,21 @@ package com.yogurt3d.presets.effects
 			shader = new FilterDream();
 		}
 		
-		public override function render():void{
-			trace("\t[EffectDream][render] start");
-			device.clear(0,0,0);
-			// set program
-			device.setProgram( shader.getProgram(device, null, "") );
-			// set context3d properties and constants
-			// eg: device.setTextureAt(0, sampler.getTextureForDevice( device );
-			
-			device.setBlendFactors( Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO );
-			device.setColorMask(true,true,true,false);
-			device.setDepthTest( false, Context3DCompareMode.ALWAYS );
-			device.setCulling( Context3DTriangleFace.NONE );
-			
+		public override function setShaderParameters():void{
 			device.setTextureAt( 0, sampler);
 			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([0.001, 0.003, 0.005, 0.007]));
 			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1,  Vector.<Number>([0.009, 0.011, 3.0, 9.5]));
-			
-			// render
-			renderer.render(device,scene,camera,drawRect);
+		}
+		
+		public override function clean():void{
 			device.setTextureAt( 0, null);
+		}
+		
+		public override function render():void{
+			trace("\t[EffectDream][render] start");
+			
+			super.render();
+			
 			trace("\t[EffectDream][render] end");
 			
 		}
@@ -69,7 +63,7 @@ internal class FilterDream extends Shader
 	public override function getFragmentProgram(_lightType:ELightType=null):ByteArray{
 		return ShaderUtils.fragmentAssambler.assemble( AGALMiniAssembler.FRAGMENT,
 			[
-			
+				
 				"tex ft0 v0 fs0<2d,wrap,linear>",
 				"add ft1 v0 fc0.x",// uv+0.001
 				"tex ft1 ft1 fs0<2d,wrap,linear>",//texture2D(sceneTex, uv+0.001);

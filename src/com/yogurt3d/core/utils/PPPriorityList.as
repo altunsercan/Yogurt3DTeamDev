@@ -9,7 +9,7 @@ package com.yogurt3d.core.utils
 	import flash.display3D.Context3DTextureFormat;
 	import flash.display3D.textures.TextureBase;
 	import flash.geom.Rectangle;
-
+	
 	public class PPPriorityList
 	{
 		private var m_list:Vector.<PostProcessingEffectBase>;
@@ -32,8 +32,17 @@ package com.yogurt3d.core.utils
 				$add( value );
 			}
 		}
+		
+		public function removeAll():void{
+			m_list.splice(0, m_list.length);
+		}
+		
 		public function remove( value:PostProcessingEffectBase ):void{
-			
+			var index:uint;
+			if( (index = m_list.indexOf( value ) ) != -1 )
+			{
+				m_list.splice(index,1);
+			}
 		}
 		public function removeByIndex( value:uint ):void{
 			m_list.splice( value, 1 );
@@ -66,7 +75,7 @@ package com.yogurt3d.core.utils
 				}else{
 					device.setRenderToTexture( tempTarget );
 				}
-					
+				
 				post.render();
 				
 				if( i != m_list.length -1 )

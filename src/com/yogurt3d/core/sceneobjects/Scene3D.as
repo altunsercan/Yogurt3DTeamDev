@@ -7,15 +7,16 @@ package com.yogurt3d.core.sceneobjects
 	import com.yogurt3d.core.materials.Color;
 	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
 	import com.yogurt3d.core.objects.EngineObject;
+	import com.yogurt3d.core.render.post.PostProcessingEffectBase;
 	import com.yogurt3d.core.render.texture.base.RenderTextureTargetBase;
 	import com.yogurt3d.core.utils.PPPriorityList;
 	import com.yogurt3d.core.utils.RTTPriorityList;
-
+	
 	public class Scene3D extends EngineObject
 	{
 		public var renderTargets:RTTPriorityList;
 		public var postProcesses:PPPriorityList;
-	
+		
 		
 		public static const SIMPLE_SCENE:String = "SimpleSceneTreeManagerDriver";
 		public static const QUAD_SCENE:String = "QuadSceneTreeManagerDriver";
@@ -30,7 +31,7 @@ package com.yogurt3d.core.sceneobjects
 		
 		private var m_sceneColor:Color;
 		
-/*		private var m_skyBox:SkyBox;*/
+		/*		private var m_skyBox:SkyBox;*/
 		
 		use namespace YOGURT3D_INTERNAL;
 		
@@ -43,6 +44,13 @@ package com.yogurt3d.core.sceneobjects
 			super(_initInternals);
 		}
 		
+		public function removeAllPostEffects():void{
+			postProcesses.removeAll();
+		}
+		
+		public function removePostEffect(_effect:PostProcessingEffectBase):void{
+			postProcesses.remove(_effect);
+		}
 		
 		/**
 		 * @inheritDoc
@@ -201,8 +209,8 @@ package com.yogurt3d.core.sceneobjects
 			m_postEffects = null;*/
 			/*if( skyBox )
 			{
-				skyBox.dispose();
-				skyBox = null;
+			skyBox.dispose();
+			skyBox = null;
 			}*/
 			
 			super.dispose();
@@ -212,15 +220,15 @@ package com.yogurt3d.core.sceneobjects
 			m_rootObject.disposeGPU();
 			/*if( skyBox )
 			{
-				skyBox.disposeGPU();
+			skyBox.disposeGPU();
 			}*/
 		}
 		
 		override public function disposeDeep():void{
 			/*if( skyBox )
 			{
-				skyBox.dispose();
-				skyBox = null;
+			skyBox.dispose();
+			skyBox = null;
 			}*/
 			
 			m_rootObject.disposeDeep();
@@ -231,10 +239,10 @@ package com.yogurt3d.core.sceneobjects
 			
 			/*if( m_postEffects )
 			{
-				for( var i:int = 0; i < m_postEffects.length; i++ )
-				{
-					m_postEffects[i].dispose();
-				}
+			for( var i:int = 0; i < m_postEffects.length; i++ )
+			{
+			m_postEffects[i].dispose();
+			}
 			}
 			m_postEffects = null;*/
 			
