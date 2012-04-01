@@ -2,10 +2,7 @@ package com.yogurt3d.presets.effects
 {
 	import com.yogurt3d.core.render.post.PostProcessingEffectBase;
 	
-	import flash.display3D.Context3DBlendFactor;
-	import flash.display3D.Context3DCompareMode;
 	import flash.display3D.Context3DProgramType;
-	import flash.display3D.Context3DTriangleFace;
 	
 	public class EffectDream extends PostProcessingEffectBase
 	{
@@ -13,19 +10,9 @@ package com.yogurt3d.presets.effects
 		public function EffectDream()
 		{
 			super();
-			shader = new FilterDream();
+			shader.push(new FilterDream());
 		}
-		
-		public override function setShaderParameters():void{
-			device.setTextureAt( 0, sampler);
-			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([0.001, 0.003, 0.005, 0.007]));
-			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1,  Vector.<Number>([0.009, 0.011, 3.0, 9.5]));
-		}
-		
-		public override function clean():void{
-			device.setTextureAt( 0, null);
-		}
-		
+						
 		public override function render():void{
 			trace("\t[EffectDream][render] start");
 			
@@ -38,12 +25,13 @@ package com.yogurt3d.presets.effects
 }
 import com.adobe.utils.AGALMiniAssembler;
 import com.yogurt3d.core.lights.ELightType;
+import com.yogurt3d.core.material.shaders.EShaderConstantsType;
 import com.yogurt3d.core.material.shaders.Shader;
+import com.yogurt3d.core.material.shaders.ShaderConstants;
+import com.yogurt3d.core.render.post.PostProcessingEffectBase;
 import com.yogurt3d.core.utils.ShaderUtils;
 
-import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
-import flash.geom.Rectangle;
 import flash.utils.ByteArray;
 
 internal class FilterDream extends Shader
@@ -51,7 +39,19 @@ internal class FilterDream extends Shader
 	public function FilterDream()
 	{
 		super();
+		
 	}
+	
+	public override function setShaderParameters():void{
+			device.setTextureAt( 0, PostProcessingEffectBase.sampler);
+			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([0.001, 0.003, 0.005, 0.007]));
+			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1,  Vector.<Number>([0.009, 0.011, 3.0, 9.5]));
+	}
+	
+	public override function clean():void{
+		device.setTextureAt( 0, null);
+	}
+	
 	public override function getVertexProgram(_meshKey:String, _lightType:ELightType = null):ByteArray
 	{
 		return ShaderUtils.vertexAssambler.assemble( AGALMiniAssembler.VERTEX, 

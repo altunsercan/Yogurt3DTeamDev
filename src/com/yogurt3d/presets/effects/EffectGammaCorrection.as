@@ -4,21 +4,31 @@ package com.yogurt3d.presets.effects
 	
 	import flash.display3D.Context3DProgramType;
 	
-	public class EffectGreyScale extends PostProcessingEffectBase
+	public class EffectGammaCorrection extends PostProcessingEffectBase
 	{
-		
-		public function EffectGreyScale()
+	
+		private var m_filter:FilterGammaCorrection;
+		public function EffectGammaCorrection(_gamma:Number=2.2)
 		{
 			super();
-			shader.push(new FilterGreyScale());
+					
+			shader.push( m_filter = new FilterGammaCorrection(_gamma) );
 		}
 		
+		public function get gamma():Number{
+			return m_filter.gamma;
+		}
+		
+		public function set gamma(_value:Number):void{
+			m_filter.gamma = _value;
+		}
+
 		public override function render():void{
-			trace("\t[EffectGreyScale][render] start");
+			trace("\t[EffectGammaCorrection][render] start");
 			
 			super.render();
 			
-			trace("\t[EffectGreyScale][render] end");
+			trace("\t[EffectGammaCorrection][render] end");
 			
 		}
 	}
@@ -32,16 +42,26 @@ import com.yogurt3d.core.utils.ShaderUtils;
 import flash.display3D.Context3DProgramType;
 import flash.utils.ByteArray;
 
-internal class FilterGreyScale extends Shader
+internal class FilterGammaCorrection extends Shader
 {
-	public function FilterGreyScale()
+	
+	private var m_gamma:Number;
+	public function FilterGammaCorrection(_gamma:Number=2.2)
 	{
 		super();
 	}
 	
+	public function get gamma():Number{
+		return m_gamma;
+	}
+	
+	public function set gamma(_value:Number):void{
+		m_gamma = _value;
+	}
+	
 	public override function setShaderParameters():void{
 		device.setTextureAt( 0, PostProcessingEffectBase.sampler);
-		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([0.299, 0.587, 0.114, 1.0]));
+		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([1/m_gamma, 0.5, 0.0, 1.0]));
 	}
 	
 	public override function clean():void{
@@ -57,13 +77,15 @@ internal class FilterGreyScale extends Shader
 	}
 	
 	public override function getFragmentProgram(_lightType:ELightType=null):ByteArray{
+		//outColor.rgb = pow(color, 1.0 / gammaRGB);
+		
 		return ShaderUtils.fragmentAssambler.assemble( AGALMiniAssembler.FRAGMENT,
 			[
-				"tex ft0 v0 fs0<2d,wrap,linear>",				
-				"dp3 ft1.x ft0.xyz fc0.xyz",
-				"mov ft1.y fc0.w",
+				"tex ft0 v0 fs0<2d,wrap,linear>", // get render to texture
+				"pow ft0 ft0 fc0.xxx", //pow(color, 1.0 / gammaRGB)
+				"mov ft0.w fc0.w",
 				
-				"mov oc ft1.xxxy"
+				"mov oc ft0"
 				
 			].join("\n")
 		);

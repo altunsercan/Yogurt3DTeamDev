@@ -4,21 +4,21 @@ package com.yogurt3d.presets.effects
 	
 	import flash.display3D.Context3DProgramType;
 	
-	public class EffectGreyScale extends PostProcessingEffectBase
+	public class EffectSephia extends PostProcessingEffectBase
 	{
 		
-		public function EffectGreyScale()
+		public function EffectSephia()
 		{
 			super();
-			shader.push(new FilterGreyScale());
+			shader.push( new FilterSephia());
 		}
-		
+				
 		public override function render():void{
-			trace("\t[EffectGreyScale][render] start");
+			trace("\t[EffectSephia][render] start");
 			
 			super.render();
 			
-			trace("\t[EffectGreyScale][render] end");
+			trace("\t[EffectSephia][render] end");
 			
 		}
 	}
@@ -32,9 +32,9 @@ import com.yogurt3d.core.utils.ShaderUtils;
 import flash.display3D.Context3DProgramType;
 import flash.utils.ByteArray;
 
-internal class FilterGreyScale extends Shader
+internal class FilterSephia extends Shader
 {
-	public function FilterGreyScale()
+	public function FilterSephia()
 	{
 		super();
 	}
@@ -42,6 +42,7 @@ internal class FilterGreyScale extends Shader
 	public override function setShaderParameters():void{
 		device.setTextureAt( 0, PostProcessingEffectBase.sampler);
 		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([0.299, 0.587, 0.114, 1.0]));
+		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1,  Vector.<Number>([1.2, 1.0, 0.8, 0.0]));
 	}
 	
 	public override function clean():void{
@@ -57,13 +58,20 @@ internal class FilterGreyScale extends Shader
 	}
 	
 	public override function getFragmentProgram(_lightType:ELightType=null):ByteArray{
+		//if (color[0].r < 0.50)
+		//	outColor.rgb = pow(color, 1.0 / gammaRGB);
+		//else
+		//	outColor.rgb = color;
+		//outColor.a = 1.0;
 		return ShaderUtils.fragmentAssambler.assemble( AGALMiniAssembler.FRAGMENT,
 			[
-				"tex ft0 v0 fs0<2d,wrap,linear>",				
-				"dp3 ft1.x ft0.xyz fc0.xyz",
-				"mov ft1.y fc0.w",
 				
-				"mov oc ft1.xxxy"
+				"tex ft0 v0 fs0<2d,wrap,linear>", // get render to texture
+				
+				"dp3 ft1.x ft0.xyz fc0.xyz",
+				"mul ft1.xyz fc1.xyz ft1.x",
+				"mov ft1.w fc0.w",
+				"mov oc ft1"
 				
 			].join("\n")
 		);

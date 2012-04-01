@@ -40,7 +40,7 @@ package com.yogurt3d.core.material.shaders
 	{		
 		use namespace YOGURT3D_INTERNAL;
 		
-		
+		private var m_device:Context3D;
 		
 		YOGURT3D_INTERNAL var m_params				: ShaderParameters;
 
@@ -63,6 +63,19 @@ package com.yogurt3d.core.material.shaders
 			m_registeredShaders = new Dictionary();
 		}		
 		
+		public function get device():Context3D
+		{
+			return m_device;
+		}
+
+		public function set device(value:Context3D):void
+		{
+			m_device = value;
+		}
+		
+		public function clean():void{}
+		public function setShaderParameters():void{}
+
 		public function get attributes():Vector.<EVertexAttribute>
 		{
 			return m_attributes;

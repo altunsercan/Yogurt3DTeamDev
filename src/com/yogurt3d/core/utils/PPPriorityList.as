@@ -1,6 +1,7 @@
 package com.yogurt3d.core.utils
 {
 	import com.yogurt3d.core.cameras.Camera3D;
+	import com.yogurt3d.core.render.base.RenderTargetBase;
 	import com.yogurt3d.core.render.post.PostProcessingEffectBase;
 	import com.yogurt3d.core.render.texture.RenderTexture;
 	import com.yogurt3d.core.sceneobjects.Scene3D;
@@ -63,11 +64,13 @@ package com.yogurt3d.core.utils
 				post.scene = scene;
 				post.camera = camera;
 				post.drawRect = drawRect;
+				RenderTargetBase.width = drawRect.width;
+				RenderTargetBase.height = drawRect.height;
 				if( lastTexture == null )
 				{
-					post.sampler = rtt.getTextureForDevice( device );
+					PostProcessingEffectBase.sampler = rtt.getTextureForDevice( device );
 				}else{
-					post.sampler = lastTexture;
+					PostProcessingEffectBase.sampler = lastTexture;
 				}
 				if( i == m_list.length -1 )
 				{
@@ -81,7 +84,7 @@ package com.yogurt3d.core.utils
 				if( i != m_list.length -1 )
 				{
 					lastTexture = tempTarget;
-					tempTarget = post.sampler;
+					tempTarget = PostProcessingEffectBase.sampler;
 				}
 			}
 			trace("[PostProcessing][updateAll] end");

@@ -19,42 +19,44 @@ package com.yogurt3d.core.render.post
 		 * This is the previos screen to be used as a sampler\n
 		 * This will be set before render is called
 		 */		
-		public var sampler:TextureBase;
-		protected var shader:Shader;
+		public static var sampler:TextureBase;
+		protected var shader:Vector.<Shader>;
 		
 		public function PostProcessingEffectBase()
 		{
 			renderer = new PostProcessRenderer();
+			shader = new Vector.<Shader>();
 		}
 		
-		public function setShaderParameters():void{}
-		
-		public function clean():void{}
-		
 		public override function render():void{
-			device.clear();
 			
-			device.clear(scene.sceneColor.r, scene.sceneColor.g,scene.sceneColor.b);
-			// set program
-			device.setProgram( shader.getProgram(device, null, "") );
-			// set context3d properties and constants
-			// eg: device.setTextureAt(0, sampler.getTextureForDevice( device );
+			for(var i:uint = 0; i< shader.length; i++){
+				device.clear();
+				
+				device.clear(scene.sceneColor.r, scene.sceneColor.g,scene.sceneColor.b);
+				shader[i].device = device;
+				// set program
+				device.setProgram( shader[i].getProgram(device, null, "") );
+				// set context3d properties and constants
+				// eg: device.setTextureAt(0, sampler.getTextureForDevice( device );
+				
+				device.setBlendFactors( Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO );
+				device.setColorMask(true,true,true,false);
+				device.setDepthTest( false, Context3DCompareMode.ALWAYS );
+				device.setCulling( Context3DTriangleFace.NONE );
+				
+				shader[i].setShaderParameters();
+				
+				
+				// set context3d properties and constants
+				// eg: device.setTextureAt(0, sampler.getTextureForDevice( device );
+				
+				// render
+				renderer.render(device,scene,camera,drawRect);
+				
+				shader[i].clean();
+			}
 			
-			device.setBlendFactors( Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO );
-			device.setColorMask(true,true,true,false);
-			device.setDepthTest( false, Context3DCompareMode.ALWAYS );
-			device.setCulling( Context3DTriangleFace.NONE );
-			
-			setShaderParameters();
-			
-			
-			// set context3d properties and constants
-			// eg: device.setTextureAt(0, sampler.getTextureForDevice( device );
-			
-			// render
-			renderer.render(device,scene,camera,drawRect);
-			
-			clean();
 		}
 	}
 }

@@ -7,62 +7,34 @@ package com.yogurt3d.presets.effects
 	
 	public class EffectHueSaturation extends PostProcessingEffectBase
 	{
-		private var m_hue:Number;
-		private var m_saturation:Number;
-		private var m_weights:Vector3D;
-		private var m_value:Number;
+		private var m_filter:FilterHueSaturation;
 		
 		public function EffectHueSaturation(_hue:Number= 0.0, _saturation:Number=0.0 )
 		{
 			super();
-			
-			m_weights = new Vector3D;
-			hue = _hue;
-			saturation = _saturation;	
-			
-			shader = new FilterHueSaturation();
+				
+			shader.push( m_filter = new FilterHueSaturation(_hue, _saturation) );
 		}
+		
 		
 		public function get saturation():Number
 		{
-			return m_saturation;
+			return m_filter.saturation;
 		}
 		
 		public function set saturation(value:Number):void
 		{
-			m_saturation = value;
-			m_value = (1.0 - 1.0 / (1.001 - m_saturation))
+			m_filter.saturation = value;
 		}
 		
 		public function get hue():Number
 		{
-			return m_hue;
+			return m_filter.hue;
 		}
 		
 		public function set hue(value:Number):void
 		{
-			m_hue = value;
-			
-			var s:Number = Math.sin(m_hue);
-			var c:Number = Math.cos(m_hue);
-			
-			m_weights.x = 2.0 * c;
-			m_weights.y = -Math.sqrt(3.0) * s - c;
-			m_weights.z = Math.sqrt(3.0) * s - c;
-		}
-		
-		
-		public override function setShaderParameters():void{
-			device.setTextureAt( 0, sampler);
-			
-			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([m_saturation, 0.0, 1.0, 0.0]));
-			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1,  Vector.<Number>([-1.0, 2.0, 3.0, -m_saturation]));
-			device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 2,  Vector.<Number>([m_weights.x, m_weights.y, m_weights.z, m_value]));
-		
-		}
-		
-		public override function clean():void{
-			device.setTextureAt( 0, null);
+			m_filter.hue = value;
 		}
 		
 		public override function render():void{
@@ -78,19 +50,69 @@ package com.yogurt3d.presets.effects
 import com.adobe.utils.AGALMiniAssembler;
 import com.yogurt3d.core.lights.ELightType;
 import com.yogurt3d.core.material.shaders.Shader;
+import com.yogurt3d.core.render.post.PostProcessingEffectBase;
 import com.yogurt3d.core.utils.ShaderUtils;
 
 import flash.display3D.Context3DProgramType;
+import flash.geom.Vector3D;
 import flash.utils.ByteArray;
 
 internal class FilterHueSaturation extends Shader
 {
-	
+	private var m_hue:Number;
+	private var m_saturation:Number;
+	private var m_weights:Vector3D;
+	private var m_value:Number;
 	
 	public function FilterHueSaturation(_hue:Number= 0.0, _saturation:Number=0.0 )
 	{
 		super();
 		
+		m_weights = new Vector3D;
+		hue = _hue;
+		saturation = _saturation;	
+		
+	}
+	
+	public override function setShaderParameters():void{
+		device.setTextureAt( 0, PostProcessingEffectBase.sampler);
+		
+		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([m_saturation, 0.0, 1.0, 0.0]));
+		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1,  Vector.<Number>([-1.0, 2.0, 3.0, -m_saturation]));
+		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 2,  Vector.<Number>([m_weights.x, m_weights.y, m_weights.z, m_value]));
+		
+	}
+	
+	public override function clean():void{
+		device.setTextureAt( 0, null);
+	}
+	
+	public function get saturation():Number
+	{
+		return m_saturation;
+	}
+	
+	public function set saturation(value:Number):void
+	{
+		m_saturation = value;
+		m_value = (1.0 - 1.0 / (1.001 - m_saturation))
+	}
+	
+	public function get hue():Number
+	{
+		return m_hue;
+	}
+	
+	public function set hue(value:Number):void
+	{
+		m_hue = value;
+		
+		var s:Number = Math.sin(m_hue);
+		var c:Number = Math.cos(m_hue);
+		
+		m_weights.x = 2.0 * c;
+		m_weights.y = -Math.sqrt(3.0) * s - c;
+		m_weights.z = Math.sqrt(3.0) * s - c;
 	}
 	
 	public override function getVertexProgram(_meshKey:String, _lightType:ELightType = null):ByteArray

@@ -4,6 +4,7 @@ package com.yogurt3d.core.render.base
 	import com.yogurt3d.core.render.renderer.DefaultRenderer;
 	import com.yogurt3d.core.render.renderer.IRenderer;
 	import com.yogurt3d.core.sceneobjects.Scene3D;
+	import com.yogurt3d.core.utils.MathUtils;
 	
 	import flash.display3D.Context3D;
 	import flash.geom.Rectangle;
@@ -16,6 +17,8 @@ package com.yogurt3d.core.render.base
 		protected var m_renderer:IRenderer;
 		protected var m_currentBackBufferRect:Rectangle;
 		protected var m_newBackBufferRect:Rectangle;
+		public static var width:uint;
+		public static var height:uint;
 		
 		public var autoUpdate:Boolean = false;
 		

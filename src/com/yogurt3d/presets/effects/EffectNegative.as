@@ -4,21 +4,21 @@ package com.yogurt3d.presets.effects
 	
 	import flash.display3D.Context3DProgramType;
 	
-	public class EffectGreyScale extends PostProcessingEffectBase
+	public class EffectNegative extends PostProcessingEffectBase
 	{
 		
-		public function EffectGreyScale()
+		public function EffectNegative()
 		{
 			super();
-			shader.push(new FilterGreyScale());
+			shader.push(new FilterNegative());
 		}
 		
 		public override function render():void{
-			trace("\t[EffectGreyScale][render] start");
+			trace("\t[EffectNegative][render] start");
 			
 			super.render();
 			
-			trace("\t[EffectGreyScale][render] end");
+			trace("\t[EffectNegative][render] end");
 			
 		}
 	}
@@ -32,16 +32,16 @@ import com.yogurt3d.core.utils.ShaderUtils;
 import flash.display3D.Context3DProgramType;
 import flash.utils.ByteArray;
 
-internal class FilterGreyScale extends Shader
+internal class FilterNegative extends Shader
 {
-	public function FilterGreyScale()
+	public function FilterNegative()
 	{
 		super();
 	}
 	
 	public override function setShaderParameters():void{
 		device.setTextureAt( 0, PostProcessingEffectBase.sampler);
-		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([0.299, 0.587, 0.114, 1.0]));
+		device.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0,  Vector.<Number>([1.0, 0.0, 0.0, 0.0]));	
 	}
 	
 	public override function clean():void{
@@ -59,11 +59,11 @@ internal class FilterGreyScale extends Shader
 	public override function getFragmentProgram(_lightType:ELightType=null):ByteArray{
 		return ShaderUtils.fragmentAssambler.assemble( AGALMiniAssembler.FRAGMENT,
 			[
-				"tex ft0 v0 fs0<2d,wrap,linear>",				
-				"dp3 ft1.x ft0.xyz fc0.xyz",
-				"mov ft1.y fc0.w",
+				"tex ft0 v0 fs0<2d,wrap,linear>", 
+				"sub ft0.xyz fc0.xxx ft0.xyz",//vec3(1.0) - texture2D(tex0, gl_TexCoord[0].xy).rgb;
+				"mov ft0.w fc0.x",
 				
-				"mov oc ft1.xxxy"
+				"mov oc ft0"
 				
 			].join("\n")
 		);
