@@ -18,13 +18,11 @@ package com.yogurt3d.presets.setup
 			
 			if( _parent.stage )
 			{
-				viewport = new Viewport();
 				viewport.x = 0;
 				viewport.y= 0;
 				viewport.width = _parent.stage.stageWidth;
 				viewport.height = _parent.stage.stageHeight;
 			}else{
-				viewport = new Viewport();
 				viewport.x = 0;
 				viewport.y= 0;
 				viewport.width = _parent.width;

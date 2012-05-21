@@ -1,6 +1,6 @@
 package com.yogurt3d.presets.cameras
 {
-	import com.yogurt3d.core.Yogurt3D;
+	import com.yogurt3d.Yogurt3D;
 	import com.yogurt3d.core.cameras.Camera3D;
 	import com.yogurt3d.core.sceneobjects.SceneObject;
 	

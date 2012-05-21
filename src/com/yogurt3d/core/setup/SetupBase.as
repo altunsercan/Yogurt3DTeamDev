@@ -23,7 +23,7 @@ package com.yogurt3d.core.setup
 		protected function ready():void{
 		}
 		
-	YOGURT3D_INTERNAL function get scene():Scene3D
+		YOGURT3D_INTERNAL function get scene():Scene3D
 		{
 			return m_viewport.scene;
 		}

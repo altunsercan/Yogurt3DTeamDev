@@ -21,15 +21,16 @@
 package com.yogurt3d.core.geoms
 {
 
-	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
-	import com.yogurt3d.core.animation.IControllable;
-	import com.yogurt3d.core.animation.controllers.IController;
 	import com.yogurt3d.core.animation.controllers.SkinController;
 	import com.yogurt3d.core.geoms.interfaces.IMesh;
+	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
 	import com.yogurt3d.core.objects.EngineObject;
+	import com.yogurt3d.core.objects.interfaces.IController;
 	import com.yogurt3d.core.objects.interfaces.IEngineObject;
 	import com.yogurt3d.core.volumes.AxisAlignedBoundingBox;
 	import com.yogurt3d.core.volumes.BoundingSphere;
+	
+	import spark.components.supportClasses.Skin;
 	
 	
 	use namespace YOGURT3D_INTERNAL;
@@ -39,7 +40,7 @@ package com.yogurt3d.core.geoms
  	 * @author Yogurt3D Engine Core Team
  	 * @company Yogurt3D Corp.
  	 **/
-	public class SkeletalAnimatedMesh extends EngineObject implements IMesh, IControllable
+	public class SkeletalAnimatedMesh extends EngineObject implements IMesh
 	{
 		private var m_bones						: Vector.<Bone>;
 		private var m_base:SkeletalAnimatedMeshBase;
@@ -55,20 +56,13 @@ package com.yogurt3d.core.geoms
 		{
 			m_base = base;
 			m_subMeshList = m_base.subMeshList;
+			m_controller = addComponent("skinController", SkinController);
 			super( true );
 		}
 		
 		
 		public function get controller():IController{
-			if( m_controller == null )
-			{
-				m_controller = new SkinController( this ); 
-			}
 			return m_controller;
-		}
-		
-		public function set controller( _value:IController ):void{
-			m_controller = _value;
 		}
 		
 		public function get axisAlignedBoundingBox():AxisAlignedBoundingBox
@@ -127,8 +121,6 @@ package com.yogurt3d.core.geoms
 		public override function dispose():void
 		{
 			m_base = null;
-			controller.dispose();
-			controller = null;
 			super.dispose();
 		}
 		public override function disposeGPU():void{
@@ -138,8 +130,6 @@ package com.yogurt3d.core.geoms
 		{
 			m_base.disposeDeep();
 			m_base = null;
-			controller.dispose();
-			controller = null;
 			dispose();
 		}
 		

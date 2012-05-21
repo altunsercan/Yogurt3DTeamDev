@@ -1,11 +1,14 @@
 package com.yogurt3d.core.viewports
 {
+	import com.yogurt3d.Yogurt3D;
 	import com.yogurt3d.core.Time;
-	import com.yogurt3d.core.Yogurt3D;
 	import com.yogurt3d.core.cameras.Camera3D;
+	import com.yogurt3d.core.managers.IDManager;
+	import com.yogurt3d.core.objects.interfaces.IEngineObject;
 	import com.yogurt3d.core.render.BackBufferRenderTarget;
 	import com.yogurt3d.core.render.base.RenderTargetBase;
 	import com.yogurt3d.core.sceneobjects.Scene3D;
+	import com.yogurt3d.core.utils.InputManager;
 	
 	import flash.display.Sprite;
 	import flash.display3D.Context3D;
@@ -13,7 +16,7 @@ package com.yogurt3d.core.viewports
 	import flash.events.Event;
 	import flash.text.TextField;
 	
-	public class Viewport extends Sprite
+	public class Viewport extends Sprite implements IEngineObject
 	{
 		private static var viewports			:Vector.<uint> = Vector.<uint>([0,1,2]);
 		
@@ -85,6 +88,9 @@ package com.yogurt3d.core.viewports
 			stage.stage3Ds[m_viewportID].addEventListener(Event.CONTEXT3D_CREATE, onContextCreated );
 			stage.stage3Ds[m_viewportID].addEventListener(ErrorEvent.ERROR, onError );
 			stage.stage3Ds[m_viewportID].requestContext3D();
+			
+			InputManager.setTriggerViewport( stage );
+			
 			Yogurt3D.registerViewport( this );
 			drawBackground();
 		}
@@ -99,7 +105,7 @@ package com.yogurt3d.core.viewports
 			addChild( text );
 		}
 		private function onContextCreated( _event:Event ):void{
-			m_device = stage.stage3Ds[0].context3D;
+			m_device = stage.stage3Ds[m_viewportID].context3D;
 			m_currentRenderTarget.device = m_device;
 		}
 		private function drawBackground():void{
@@ -122,6 +128,37 @@ package com.yogurt3d.core.viewports
 			if( !isDeviceCreated ) return;
 			trace("[Viewport][update] frame: " + Time.frameCount, " time:" + Time.timeSeconds);
 			m_currentRenderTarget.render();
+			trace("---------------");
+		}
+		////////////////////////////
+		// IIdentifiableObject	  //
+		////////////////////////////
+		include "../../../../../includes/IdentifiableObject.as"
+		
+		////////////////////////////
+		// IReconstructibleObject //
+		////////////////////////////
+		public function instance():*{
+			throw new Error("Viewports are not be initantialized");
+		}
+		
+		public function clone():IEngineObject{
+			throw new Error("Viewports are not clonable");
+		}
+		
+		public function renew():void{
+			throw new Error("Not implemented!");
+		}
+		
+		public function dispose():void{
+			IDManager.removeObject(this);	
+		}
+		public function disposeDeep():void{
+			scene.disposeDeep();
+			dispose();
+		}
+		public function disposeGPU():void{
+			scene.disposeGPU();
 		}
 	}
 }

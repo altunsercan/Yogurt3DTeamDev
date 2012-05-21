@@ -1,5 +1,5 @@
 /*
- * ISerializableObject.as
+ * IController.as
  * This file is part of Yogurt3D Flash Rendering Engine 
  *
  * Copyright (C) 2011 - Yogurt3D Corp.
@@ -15,18 +15,20 @@
  * You should have received a copy of the YOGURT3D CLICK-THROUGH AGREEMENT
  * License along with this library. If not, see <http://www.yogurt3d.com/yogurt3d/downloads/yogurt3d-click-through-agreement.html>. 
  */
- 
+  
 package com.yogurt3d.core.objects.interfaces
 {
+	import org.swiftsuspenders.Injector;
+
 	/**
-	 * 
+	 * Interface for all controllers
 	 * 
  	 * @author Yogurt3D Engine Core Team
  	 * @company Yogurt3D Corp.
  	 **/
-	public interface ISerializableObject
+	public interface IController
 	{
-		function deserialize(_value:*):void;
-		function serialize():*;
+		function initialize():void;
+		function dispose():void;
 	}
 }

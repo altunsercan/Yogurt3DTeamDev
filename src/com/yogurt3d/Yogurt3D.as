@@ -1,4 +1,4 @@
-package com.yogurt3d.core
+package com.yogurt3d
 {
 	import flash.events.Event;
 	import flash.utils.getTimer;
@@ -11,6 +11,7 @@ package com.yogurt3d.core
 	import com.yogurt3d.core.sceneobjects.scenetree.SceneTreePlugins;
 	import com.yogurt3d.core.viewports.Viewport;
 	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
+	import com.yogurt3d.core.Time;
 
 	public class Yogurt3D
 	{

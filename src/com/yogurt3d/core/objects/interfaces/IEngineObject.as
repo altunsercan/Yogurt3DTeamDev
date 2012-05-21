@@ -25,7 +25,7 @@ package com.yogurt3d.core.objects.interfaces
   	 * @author Yogurt3D Engine Core Team
   	 * @company Yogurt3D Corp.
   	 **/
-	public interface IEngineObject extends IIdentifiableObject, IReconstructibleObject
+	public interface IEngineObject extends IIdentifiableObject, IReconstructibleObject, IControllable
 	{
 		/**
 		 * Returns a string identifier on this object 

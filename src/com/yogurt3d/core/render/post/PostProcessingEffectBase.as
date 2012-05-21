@@ -33,7 +33,6 @@ package com.yogurt3d.core.render.post
 			for(var i:uint = 0; i< shader.length; i++){
 				device.clear();
 				
-				device.clear(scene.sceneColor.r, scene.sceneColor.g,scene.sceneColor.b);
 				shader[i].device = device;
 				// set program
 				device.setProgram( shader[i].getProgram(device, null, "") );

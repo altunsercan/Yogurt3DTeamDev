@@ -18,20 +18,22 @@
 
 package com.yogurt3d.core.animation.controllers
 {
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
-	import flash.utils.Dictionary;
-	
+	import com.yogurt3d.Yogurt3D;
 	import com.yogurt3d.core.Time;
-	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
-	import com.yogurt3d.core.Yogurt3D;
 	import com.yogurt3d.core.animation.SkeletalAnimationData;
 	import com.yogurt3d.core.animation.event.AnimationEvent;
 	import com.yogurt3d.core.geoms.Bone;
 	import com.yogurt3d.core.geoms.SkeletalAnimatedMesh;
+	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
+	import com.yogurt3d.core.objects.Controller;
+	import com.yogurt3d.core.objects.interfaces.IController;
 	import com.yogurt3d.core.sceneobjects.transformations.Quaternion;
 	import com.yogurt3d.core.utils.MathUtils;
+	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+	import flash.utils.Dictionary;
 	
 	use namespace YOGURT3D_INTERNAL;
 	
@@ -64,7 +66,7 @@ package com.yogurt3d.core.animation.controllers
 	 * 07/11/2011 - Gurel Erceis - Added hasAnimation function
 	 * 09/21/2011 - Trevor Lanz - Bug Fix
 	 **/
-	public class SkinController implements IEventDispatcher, IController
+	public class SkinController extends Controller implements IEventDispatcher
 	{
 		public static const STATE_PLAYING						:uint = 0;
 		
@@ -79,6 +81,9 @@ package com.yogurt3d.core.animation.controllers
 		public static const BLEND_THEN_ANIMATE					:uint = 1;
 		
 		public static const BLEND_ANIMATED						:uint = 2;
+		
+		[Inject]
+		public var mesh											:SkeletalAnimatedMesh;
 		
 		YOGURT3D_INTERNAL var m_startTime						:uint = 0;
 		
@@ -105,8 +110,6 @@ package com.yogurt3d.core.animation.controllers
 		
 		YOGURT3D_INTERNAL var m_lastFrame						:int;
 		
-		YOGURT3D_INTERNAL var m_mesh							:SkeletalAnimatedMesh;
-		
 		YOGURT3D_INTERNAL var m_loopCount						:int = 0;
 		
 		YOGURT3D_INTERNAL var m_blendMode						:uint;
@@ -115,18 +118,14 @@ package com.yogurt3d.core.animation.controllers
 		
 		YOGURT3D_INTERNAL var m_frameEventListeners				:Dictionary;
 		
-		public function SkinController(_mesh:SkeletalAnimatedMesh)
+		public function SkinController()
 		{
-			if( _mesh == null )
-			{
-				throw new Error("Mesh not bound.");
-			}
 			m_internalEventDispatcher = new EventDispatcher(this);
 			m_animations = new Dictionary();
 			m_frameEventListeners = new Dictionary();
-			m_mesh = _mesh;
+			
 		}
-		
+
 		public function set frameRateOverride( _frameRate:int ):void
 		{
 			m_frameRateOverride = _frameRate;
@@ -134,7 +133,7 @@ package com.yogurt3d.core.animation.controllers
 		
 		public function shareBonesWith( _skeletalAnimatedMesh:SkeletalAnimatedMesh ):void
 		{
-			_skeletalAnimatedMesh.bones = m_mesh.bones;
+			_skeletalAnimatedMesh.bones = mesh.bones;
 		}
 		
 		public function get lastPlayedFrame():uint
@@ -142,10 +141,6 @@ package com.yogurt3d.core.animation.controllers
 			return m_lastFrame;
 		}
 		
-		public function get mesh():SkeletalAnimatedMesh
-		{
-			return m_mesh;
-		}
 		/**
 		 * Returns the current animation 
 		 * @return 
@@ -156,9 +151,9 @@ package com.yogurt3d.core.animation.controllers
 			return m_currentAnimation;
 		}
 		
-		public function dispose():void{
+		public override function dispose():void{
 			Yogurt3D.onUpdate.remove( updateWithTimeInfo );
-			m_mesh = null;
+			mesh = null;
 			m_animations = null;
 		}
 		/**
@@ -252,9 +247,9 @@ package com.yogurt3d.core.animation.controllers
 		 * 
 		 */		
 		public function updateObservers():void{
-			for( i = 0; i < m_mesh.bones.length;i++ )
+			for( i = 0; i < mesh.bones.length;i++ )
 			{	
-				var bone:Bone = m_mesh.bones[i];
+				var bone:Bone = mesh.bones[i];
 				
 				bone.update();
 			}	
@@ -347,7 +342,7 @@ package com.yogurt3d.core.animation.controllers
 				// Data of the current frame
 				var _currentFrameData:Dictionary = animation.frameData[ currentFrame ];
 				var boneName:String;
-				var meshBoneLength:uint = m_mesh.bones.length;
+				var meshBoneLength:uint = mesh.bones.length;
 				var bone:Bone;
 				if( m_blendMode == BLEND_ANIMATED )
 				{
@@ -363,7 +358,7 @@ package com.yogurt3d.core.animation.controllers
 						// set the bone transformations
 						for( i = 0; i < meshBoneLength;i++ )
 						{
-							bone = m_mesh.bones[i];
+							bone = mesh.bones[i];
 							boneName = bone.name;
 							
 							obj = _currentFrameData[ boneName ];
@@ -383,7 +378,7 @@ package com.yogurt3d.core.animation.controllers
 					// set the bone transformations
 					for( i = 0; i < meshBoneLength;i++ )
 					{
-						bone = m_mesh.bones[i];
+						bone = mesh.bones[i];
 						boneName = bone.name;
 						
 						obj = _currentFrameData[ boneName ];
@@ -403,7 +398,7 @@ package com.yogurt3d.core.animation.controllers
 				// update the transformation matrices
 				for( i = 0; i < meshBoneLength;i++ )
 				{	
-					bone = m_mesh.bones[i];
+					bone = mesh.bones[i];
 					boneName = bone.name;
 					
 					// if matrix is arhived
