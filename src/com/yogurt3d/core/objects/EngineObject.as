@@ -37,7 +37,7 @@ package com.yogurt3d.core.objects {
   	 **/
 	public class EngineObject implements IEngineObject
 	{
-		private var injector:Injector;
+		public var injector:Injector;
 		
 		private var m_componentDict:Dictionary;
 		

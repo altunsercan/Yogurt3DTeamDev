@@ -16,7 +16,7 @@ package com.yogurt3d.core.viewports
 	import flash.events.Event;
 	import flash.text.TextField;
 	
-	public class Viewport extends Sprite implements IEngineObject
+	public class Viewport extends Sprite 
 	{
 		private static var viewports			:Vector.<uint> = Vector.<uint>([0,1,2]);
 		
@@ -133,7 +133,7 @@ package com.yogurt3d.core.viewports
 		////////////////////////////
 		// IIdentifiableObject	  //
 		////////////////////////////
-		include "../../../../../includes/IdentifiableObject.as"
+		//include "../../../../../includes/IdentifiableObject.as"
 		
 		////////////////////////////
 		// IReconstructibleObject //
@@ -151,7 +151,7 @@ package com.yogurt3d.core.viewports
 		}
 		
 		public function dispose():void{
-			IDManager.removeObject(this);	
+			//IDManager.removeObject(this);	
 		}
 		public function disposeDeep():void{
 			scene.disposeDeep();

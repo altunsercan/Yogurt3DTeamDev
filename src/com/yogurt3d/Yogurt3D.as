@@ -1,20 +1,23 @@
 package com.yogurt3d
 {
-	import flash.events.Event;
-	import flash.utils.getTimer;
-	
-	import org.osflash.signals.PrioritySignal;
-	
+	import com.yogurt3d.core.Time;
 	import com.yogurt3d.core.managers.SceneTreeManager;
+	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
 	import com.yogurt3d.core.plugin.Kernel;
 	import com.yogurt3d.core.plugin.Server;
 	import com.yogurt3d.core.sceneobjects.scenetree.SceneTreePlugins;
 	import com.yogurt3d.core.viewports.Viewport;
-	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
-	import com.yogurt3d.core.Time;
+	import com.yogurt3d.physics.plugin.IYogurt3DPhysicsPlugin;
+	
+	import flash.events.Event;
+	import flash.utils.getTimer;
+	
+	import org.osflash.signals.PrioritySignal;
 
 	public class Yogurt3D
 	{
+		public static var physics:IYogurt3DPhysicsPlugin;
+		
 		public static var m_viewportList:Vector.<Viewport> = new Vector.<Viewport>();
 		
 		private static var m_isEnterFrameRegistered:Boolean = false;
@@ -53,9 +56,12 @@ package com.yogurt3d
 			Time.YOGURT3D_INTERNAL::m_time += Time.YOGURT3D_INTERNAL::m_deltaTime;
 			Time.YOGURT3D_INTERNAL::m_timeSeconds = Time.YOGURT3D_INTERNAL::m_time / 1000;
 			m_lastEnterFrame = now;
-			// diger timelar yazilacak
 			
 			onFrameStart.dispatch();
+			if(physics!=null)
+			{
+				physics.step();
+			}
 			onUpdate.dispatch();
 			for( var i:int = 0; i < m_viewportList.length; i++ )
 			{

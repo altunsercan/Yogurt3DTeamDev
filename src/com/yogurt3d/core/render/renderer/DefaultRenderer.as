@@ -33,12 +33,12 @@ package com.yogurt3d.core.render.renderer
 		{
 		}
 		public function render( device:Context3D, scene:Scene3D, camera:Camera3D, rect:Rectangle ):void{
-			trace("\t[DefaultRenderer][render] start");
+			//trace("\t[DefaultRenderer][render] start");
 			var _renderableSet:Vector.<SceneObjectRenderable> = scene.getRenderableSet( camera );
 			rendererHelper.beginScene(camera);
 			renderSceneObjects( device,_renderableSet,scene.getIntersectedLightsByCamera(camera), camera, scene);
 			rendererHelper.endScene();
-			trace("\t[DefaultRenderer][render] end");
+			//trace("\t[DefaultRenderer][render] end");
 		}
 		
 		private final function renderSceneObjects( device:Context3D,  _renderableSet :Vector.<SceneObjectRenderable>,  _lights :Vector.<Light>, _camera:Camera3D, _scene:Scene3D ):void{
@@ -58,7 +58,7 @@ package com.yogurt3d.core.render.renderer
 			for (i = 0; i < _numberOfRenderableObjects; i++ ) {
 				// get renderable object and properties
 				_renderableObject = _renderableSet[i];				
-				trace("\t\tRender " + _renderableObject.systemID);
+				//trace("\t\tRender " + _renderableObject.systemID);
 				if( !_renderableObject.visible ) continue;
 				
 				// Self Renderable Scene Object Handling
