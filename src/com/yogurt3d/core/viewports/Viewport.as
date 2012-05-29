@@ -4,6 +4,7 @@ package com.yogurt3d.core.viewports
 	import com.yogurt3d.core.Time;
 	import com.yogurt3d.core.cameras.Camera3D;
 	import com.yogurt3d.core.managers.IDManager;
+	import com.yogurt3d.core.namespaces.YOGURT3D_INTERNAL;
 	import com.yogurt3d.core.objects.interfaces.IEngineObject;
 	import com.yogurt3d.core.render.BackBufferRenderTarget;
 	import com.yogurt3d.core.render.base.RenderTargetBase;
@@ -16,7 +17,7 @@ package com.yogurt3d.core.viewports
 	import flash.events.Event;
 	import flash.text.TextField;
 	
-	public class Viewport extends Sprite 
+	public class Viewport extends Sprite implements IEngineObject
 	{
 		private static var viewports			:Vector.<uint> = Vector.<uint>([0,1,2]);
 		
@@ -91,11 +92,11 @@ package com.yogurt3d.core.viewports
 			
 			InputManager.setTriggerViewport( stage );
 			
-			Yogurt3D.registerViewport( this );
+			Yogurt3D.YOGURT3D_INTERNAL::registerViewport( this );
 			drawBackground();
 		}
 		protected function onRemovedFromStage( _event:Event ):void{
-			Yogurt3D.deregisterViewport( this );
+			Yogurt3D.YOGURT3D_INTERNAL::deregisterViewport( this );
 		}
 		private function onError( _event:Event ):void{
 			stage.stage3Ds[m_viewportID].removeEventListener(ErrorEvent.ERROR, arguments.callee );
@@ -133,7 +134,12 @@ package com.yogurt3d.core.viewports
 		////////////////////////////
 		// IIdentifiableObject	  //
 		////////////////////////////
-		//include "../../../../../includes/IdentifiableObject.as"
+		include "../../../../../includes/IdentifiableObject.as"
+		
+		////////////////////////////
+		// IControllableObject	  //
+		////////////////////////////
+		include "../../../../../includes/ControllableObject.as"
 		
 		////////////////////////////
 		// IReconstructibleObject //
@@ -151,7 +157,7 @@ package com.yogurt3d.core.viewports
 		}
 		
 		public function dispose():void{
-			//IDManager.removeObject(this);	
+			IDManager.removeObject(this);	
 		}
 		public function disposeDeep():void{
 			scene.disposeDeep();

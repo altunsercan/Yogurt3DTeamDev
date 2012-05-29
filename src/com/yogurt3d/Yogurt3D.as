@@ -28,7 +28,7 @@ package com.yogurt3d
 		public static var onUpdate:PrioritySignal = new PrioritySignal();
 		public static var onFrameEnd:PrioritySignal = new PrioritySignal();
 		
-		public static function registerViewport( viewport:Viewport ):void{
+		YOGURT3D_INTERNAL static function registerViewport( viewport:Viewport ):void{
 			m_viewportList.push( viewport );
 			if( !m_isEnterFrameRegistered && viewport.stage )
 			{
@@ -37,7 +37,7 @@ package com.yogurt3d
 				m_isEnterFrameRegistered = true;
 			}
 		}
-		public static function deregisterViewport( viewport:Viewport ):void{
+		YOGURT3D_INTERNAL static function deregisterViewport( viewport:Viewport ):void{
 			// find index of viewport
 			var index:int = m_viewportList.indexOf( viewport );
 			if( index != -1 )

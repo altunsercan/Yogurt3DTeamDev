@@ -8,7 +8,7 @@ package com.yogurt3d.physics
 	
 	public class ColliderComponent extends Controller
 	{
-		[Inject(name="collidable")]
+		[Inject]
 		public var sceneObject:SceneObject;
 		
 		private var m_object:PhysicsObjectBase;
